@@ -9,7 +9,20 @@ services:
   # Use `docker compose up frontend-dev --build --attach-dependencies` to start all services needed to work on the frontend.
   frontend-dev:
     image: sverrirab/sleep
-    depends_on: [db, webdb, adminer, maildev, backend, redis]
+    depends_on:
+      [
+        db,
+        webdb,
+        adminer,
+        maildev,
+        backend,
+        redis,
+        inference-server,
+        inference-worker,
+        inference-text-generation-server,
+      ]
+    profiles:
+      - inference
 
   # Used by CI automations.
   ci:
@@ -145,6 +158,8 @@ services:
     environment:
       - "PORT=8000"
       - "REDIS_HOST=redis"
+    ports:
+      - 8000:8000
     volumes:
       - "./oasst-shared:/opt/inference/lib/oasst-shared"
       - "./inference/server:/opt/inference/server"
